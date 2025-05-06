@@ -20,8 +20,11 @@ public class Program {
                         "4. Lưu \n5.Đọc file\n6.Thoát");
                 int chon = Integer.parseInt(sc.nextLine());
                 switch (chon) {
-                    case 1 -> thueBaoController.nhapThueBao();
-                    case 2 -> thueBaoController.inDanhSach();
+                    case 1 -> {
+                        thueBaoController.nhapThueBao();
+                        System.out.println("Thuê bao đã được thêm. Nhớ chọn 4. Lưu để ghi vào file.");
+                    }
+                    case 2 -> thueBaoController.inDanhSachTheoLoai();
                     case 3 -> thueBaoController.timThueBaoMax();
                     case 4 -> {
                         thueBaoController.ghiRaFile();

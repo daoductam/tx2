@@ -5,6 +5,14 @@ import java.io.Serializable;
 public class ThueBaoTheoDungLuong extends ThueBao implements Serializable {
     private int soMB;
 
+    public int getSoMB() {
+        return soMB;
+    }
+
+    public void setSoMB(int soMB) {
+        this.soMB = soMB;
+    }
+
     public ThueBaoTheoDungLuong(String hoTen, String diaChi, String soDienThoai, int soMB) {
         super(hoTen, diaChi, soDienThoai);
         if (soMB <=0) {

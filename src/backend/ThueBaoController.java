@@ -45,6 +45,8 @@ public class ThueBaoController {
             System.out.println("Lỗi: " + e.getMessage());
 
         }
+
+
     }
 
 
@@ -52,6 +54,31 @@ public class ThueBaoController {
         System.out.println("\n--- DANH SÁCH THUÊ BAO ---");
         danhSach.forEach(System.out::println);
     }
+
+    public void inDanhSachTheoLoai() {
+        System.out.println("\n========= DANH SÁCH THUÊ BAO TRỌN GÓI =========");
+        System.out.printf("| %-4s | %-15s | %-12s | %-11s | %-8s |\n",
+                "STT", "Họ tên", "Địa chỉ", "SĐT", "Cước");
+        int stt = 1;
+        for (ThueBao tb : danhSach) {
+            if (tb instanceof ThueBaoTronGoi) {
+                System.out.printf("| %-4d | %-15s | %-12s | %-11s | %-8d |\n",
+                        stt++, tb.getHoTen(), tb.getDiaChi(), tb.getSoDienThoai(), tb.tinhCuoc());
+            }
+        }
+
+        System.out.println("\n===== DANH SÁCH THUÊ BAO THEO DUNG LƯỢNG =====");
+        System.out.printf("| %-4s | %-15s | %-12s | %-11s | %-5s | %-8s |\n",
+                "STT", "Họ tên", "Địa chỉ", "SĐT", "MB", "Cước");
+        stt = 1;
+        for (ThueBao tb : danhSach) {
+            if (tb instanceof ThueBaoTheoDungLuong tbDL) {
+                System.out.printf("| %-4d | %-15s | %-12s | %-11s | %-5d | %-8d |\n",
+                        stt++, tbDL.getHoTen(), tbDL.getDiaChi(), tbDL.getSoDienThoai(), tbDL.getSoMB(), tbDL.tinhCuoc());
+            }
+        }
+    }
+
 
     public void timThueBaoMax() {
         if (danhSach.isEmpty()) {
