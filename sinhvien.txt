@@ -1,0 +1,202 @@
+Câu 1: Lớp Student (2 điểm)
+import java.io.Serializable;
+
+public class Student implements Serializable {
+    private String fullName;
+    private String birthDate;
+    private String gender;
+    private String cccd;
+    private String studentId;
+    private String major;
+    private String username;
+    private String password;
+    private double m1;
+    private double m2;
+    private double m3;
+
+    public Student(String fullName, String birthDate, String gender, String cccd, String studentId,
+                   String major, String username, String password,
+                   double m1, double m2, double m3) {
+        this.fullName = fullName;
+        this.birthDate = birthDate;
+        this.gender = gender;
+        this.cccd = cccd;
+        this.studentId = studentId;
+        this.major = major;
+        this.username = username;
+        this.password = password;
+        this.m1 = m1;
+        this.m2 = m2;
+        this.m3 = m3;
+    }
+
+    public double getAverage() {
+        return (m1 + m2 + m3) / 3;
+    }
+
+    // Getters & Setters (bạn nên dùng IDE để generate)
+    // toString
+    @Override
+    public String toString() {
+        return String.format("ID: %s | Name: %s | Avg: %.2f", studentId, fullName, getAverage());
+    }
+}
+📁 Câu 2: Lớp StudentDAO – Đọc/Ghi File (2 điểm)
+import java.io.*;
+import java.util.ArrayList;
+
+public class StudentDAO {
+    private static final String FILE_NAME = "students.dat";
+
+    public static void saveToFile(ArrayList<Student> students) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(FILE_NAME))) {
+            oos.writeObject(students);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static ArrayList<Student> readFromFile() {
+        File file = new File(FILE_NAME);
+        if (!file.exists()) return new ArrayList<>();
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
+            return (ArrayList<Student>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+}
+🧰 Câu 3: Lớp StudentManager – Thêm, Sửa, Xóa, Tìm (4 điểm)
+import java.util.ArrayList;
+
+public class StudentManager {
+    private ArrayList<Student> students;
+
+    public StudentManager() {
+        students = StudentDAO.readFromFile();
+    }
+
+    public void addStudent(Student student) {
+        students.add(student);
+        StudentDAO.saveToFile(students);
+    }
+
+    public boolean deleteStudent(String id) {
+        Student found = findById(id);
+        if (found != null) {
+            students.remove(found);
+            StudentDAO.saveToFile(students);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean updateStudent(String id, Student updatedStudent) {
+        for (int i = 0; i < students.size(); i++) {
+            if (students.get(i).getStudentId().equals(id)) {
+                students.set(i, updatedStudent);
+                StudentDAO.saveToFile(students);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Student findById(String id) {
+        for (Student s : students) {
+            if (s.getStudentId().equals(id)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public void displayAll() {
+        for (Student s : students) {
+            System.out.println(s);
+        }
+    }
+}
+🖥️ Câu 4: Lớp Main – Giao diện menu chính (2 điểm)
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        StudentManager manager = new StudentManager();
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.println("CHUONG TRINH QUAN LY SINH VIEN");
+            System.out.println("1. Nhap sinh vien");
+            System.out.println("2. Hien thi sinh vien");
+            System.out.println("3. Tim kiem");
+            System.out.println("4. Them ban ghi");
+            System.out.println("5. Sua ban ghi");
+            System.out.println("6. Xoa ban ghi");
+            System.out.println("7. Thoat");
+            System.out.print("Chon chuc nang: ");
+            int choice = sc.nextInt(); sc.nextLine();
+
+            switch (choice) {
+                case 1:
+                case 4:
+                    Student s = inputStudent(sc);
+                    manager.addStudent(s);
+                    break;
+                case 2:
+                    manager.displayAll();
+                    break;
+                case 3:
+                    System.out.print("Nhap ma sinh vien can tim: ");
+                    String id = sc.nextLine();
+                    Student found = manager.findById(id);
+                    System.out.println(found != null ? found : "Khong tim thay.");
+                    break;
+                case 5:
+                    System.out.print("Nhap ma sinh vien can sua: ");
+                    String updateId = sc.nextLine();
+                    Student newData = inputStudent(sc);
+                    boolean updated = manager.updateStudent(updateId, newData);
+                    System.out.println(updated ? "Da sua." : "Khong tim thay.");
+                    break;
+                case 6:
+                    System.out.print("Nhap ma sinh vien can xoa: ");
+                    String deleteId = sc.nextLine();
+                    boolean deleted = manager.deleteStudent(deleteId);
+                    System.out.println(deleted ? "Da xoa." : "Khong tim thay.");
+                    break;
+                case 7:
+                    return;
+                default:
+                    System.out.println("Lua chon khong hop le.");
+            }
+        }
+    }
+
+    private static Student inputStudent(Scanner sc) {
+        System.out.print("Full name: ");
+        String fullName = sc.nextLine();
+        System.out.print("Birth date: ");
+        String birthDate = sc.nextLine();
+        System.out.print("Gender: ");
+        String gender = sc.nextLine();
+        System.out.print("CCCD: ");
+        String cccd = sc.nextLine();
+        System.out.print("Student ID: ");
+        String studentId = sc.nextLine();
+        System.out.print("Major: ");
+        String major = sc.nextLine();
+        System.out.print("Username: ");
+        String username = sc.nextLine();
+        System.out.print("Password: ");
+        String password = sc.nextLine();
+        System.out.print("Mark m1: ");
+        double m1 = sc.nextDouble();
+        System.out.print("Mark m2: ");
+        double m2 = sc.nextDouble();
+        System.out.print("Mark m3: ");
+        double m3 = sc.nextDouble();
+        sc.nextLine(); // Consume newline
+        return new Student(fullName, birthDate, gender, cccd, studentId, major, username, password, m1, m2, m3);
+    }
+}
